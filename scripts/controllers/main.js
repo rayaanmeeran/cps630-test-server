@@ -41,12 +41,12 @@ angular.module('app', ["pubnub.angular.service"])
         // Listening to the callbacks
         $scope.$on(Pubnub.getMessageEventNameFor($scope.channel), function(ngEvent, m) {
             $scope.$apply(function() {
-                $scope.messages.push(m)
+                $scope.messages.push(m) // push message m onto messages array
             });
         });
 
         // A function to display a nice uniq robot avatar 
         $scope.avatarUrl = function(uuid) {
-            return 'http://robohash.org/' + uuid + '?set=set2&bgset=bg2&size=70x70';
+            return 'http://robohash.org/1?set=set2&bgset=bg2&size=70x70';
         };
     });
