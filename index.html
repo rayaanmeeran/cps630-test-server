@@ -1,1 +1,25 @@
+<!DOCTYPE html>
+<html>
 
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Page Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://cdn.pubnub.com/pubnub-3.7.21.js"></script>
+    <script src="https://cdn.pubnub.com/sdk/pubnub-angular/pubnub-angular-3.2.1.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.7/angular.min.js"></script>
+</head>
+
+<body>
+    <div ng-controller="ChatCtrl">
+        <form ng-submit="sendMessage()">
+            <input ng-model="messageContent" type="text" placeholder="Type your message" />
+            <button type="submit">Send</button>
+        </form>
+    </div>
+
+    <script src="./scripts/controllers/main.js"></script>
+</body>
+
+</html>
