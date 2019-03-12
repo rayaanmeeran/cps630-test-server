@@ -11,8 +11,8 @@ angular.module('app', ["pubnub.angular.service"])
         $scope.uuid = "1";
         $scope.points = 0;
         Pubnub.init({
-            publish_key: 'pub-c-1f91d296-28dd-4d8e-9e54-9ac3393a9772',
-            subscribe_key: 'sub-c-de35a980-441a-11e9-bd6d-163ac0efd868',
+            publish_key: 'pub-c-dcae03d5-0a42-429b-996d-f1d7e02b4036',
+            subscribe_key: 'sub-c-9282f932-4516-11e9-82b8-5ab7e7fd9be2',
             uuid: $scope.uuid,
             //  value: $scope.value
         });
@@ -67,22 +67,21 @@ angular.module('app', ["pubnub.angular.service"])
             return false;
         }
 
+
+
+
+        
+
         // Subscribing to the ‘messages-channel’ and trigering the message callback
         Pubnub.subscribe({
             channel: $scope.channel,
-            triggerEvents: ['callback']
+            triggerEvents: ['callback'],
+            withPresence: true
         });
 
-/*
-        Pubnub.hereNow(
-            {
-                channel: [$scope.channel],
-                includeUUIDs: true
-            },
-            function (status,response) {console.log(response.totalOccupancy)}
-        );
 
-*/
+  //  Pubnub.hereNow();
+
 
         // Listening to the callbacks THIS IS WHERE THE SYNCING HAPPENS
         $scope.$on(Pubnub.getMessageEventNameFor($scope.channel), function(ngEvent, m) {
@@ -92,12 +91,9 @@ angular.module('app', ["pubnub.angular.service"])
                 // M IS OBJECT OF SENT OBJECT {content:.., uuid:..)}
                 if ($scope.findword(m.content)) {
 
-
-
                 }
 
-          
-                console.log("$on: m.sender_uuid = " + m.sender_uuid);
+                 console.log("$on: m.sender_uuid = " + m.sender_uuid);
                 //console.log(m.uuid);
                 // console.log($scope.messages);
                 console.log($scope.numofPlayers);
