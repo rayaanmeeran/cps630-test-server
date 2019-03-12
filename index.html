@@ -24,6 +24,8 @@
             <button type="submit">Send</button>
         </form>
 
+        <h1 ng-model="numofPlayers">{{ numofPlayers }}</h1>
+
         <ul>
             <li ng-repeat="message in words track by $index">
                 <span class="title">Anonymous robot #{{ message.sender_uuid }}{{ uuid }}</span>
