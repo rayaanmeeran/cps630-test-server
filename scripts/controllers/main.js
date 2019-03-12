@@ -15,6 +15,15 @@ angular.module('app', ["pubnub.angular.service"])
             //  value: $scope.value
         });
 
+        $scope.setUUID = function() {
+            //Dont set to null/empty
+            if (!$scope.userID || $scope.userID === '') {
+                return;
+            }
+            $scope.uuid = $scope.userID;
+            console.log("setUUID: $scope.uuid = " + $scope.uuid);
+        }
+
 
 
         // Send the messages over PubNub Network
@@ -80,7 +89,8 @@ angular.module('app', ["pubnub.angular.service"])
 
                 }
 
-                console.log(m.uuid);
+                console.log("$on: m.sender_uuid = " + m.sender_uuid);
+                //console.log(m.uuid);
                 // console.log($scope.messages);
             });
         });
