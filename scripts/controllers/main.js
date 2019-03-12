@@ -44,7 +44,7 @@ angular.module('app', ["pubnub.angular.service"])
                     date: new Date()
                         //points=$scope.points
                 },
-                callback: function(m) {
+                callback: function(m) { 
                     console.log(m); // callback object function fires when we finish sending a message(m) to the channel
                 }
             });
@@ -76,14 +76,19 @@ angular.module('app', ["pubnub.angular.service"])
         // Subscribing to the ‘messages-channel’ and trigering the message callback
         Pubnub.subscribe({
             channel: $scope.channel,
-            triggerEvents: ['callback'],
-            connect: function() {
-                $scope.numofPlayers++;  
-            }
-            
+            triggerEvents: ['callback']
         });
 
+/*
+        Pubnub.hereNow(
+            {
+                channel: [$scope.channel],
+                includeUUIDs: true
+            },
+            function (status,response) {console.log(response.totalOccupancy)}
+        );
 
+*/
 
         // Listening to the callbacks THIS IS WHERE THE SYNCING HAPPENS
         $scope.$on(Pubnub.getMessageEventNameFor($scope.channel), function(ngEvent, m) {
@@ -97,6 +102,7 @@ angular.module('app', ["pubnub.angular.service"])
 
                 }
 
+          
                 console.log("$on: m.sender_uuid = " + m.sender_uuid);
                 //console.log(m.uuid);
                 // console.log($scope.messages);
