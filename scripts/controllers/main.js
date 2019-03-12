@@ -1,11 +1,10 @@
-
 var val1;
 var val2;
 
 angular.module('app', ["pubnub.angular.service"])
     .controller('ChatCtrl', function($scope, Pubnub) {
         $scope.channel = 'messages-channel';
-       $scope.value=0;
+        $scope.value = 0;
         // Generating a random uuid between 1 and 100 using an utility function from the lodash library.         
         $scope.uuid = "1";
         $scope.points = 0;
@@ -13,10 +12,10 @@ angular.module('app', ["pubnub.angular.service"])
             publish_key: 'pub-c-1f91d296-28dd-4d8e-9e54-9ac3393a9772',
             subscribe_key: 'sub-c-de35a980-441a-11e9-bd6d-163ac0efd868',
             uuid: $scope.uuid,
-          //  value: $scope.value
+            //  value: $scope.value
         });
 
- 
+
 
         // Send the messages over PubNub Network
         $scope.sendMessage = function() {
@@ -31,36 +30,36 @@ angular.module('app', ["pubnub.angular.service"])
                     content: $scope.messageContent,
                     sender_uuid: $scope.uuid,
                     date: new Date()
-                    //points=$scope.points
+                        //points=$scope.points
                 },
                 callback: function(m) {
                     console.log(m); // callback object function fires when we finish sending a message(m) to the channel
                 }
             });
-           
-           
-             // Reset the messageContent input
+
+
+            // Reset the messageContent input
             $scope.messageContent = '';
         }
 
 
 
         $scope.messages = [];
-        $scope.words=["hello","bye","tonight","math","math"];
-        
+        $scope.words = ["hello", "bye", "tonight", "math", "math"];
+
 
         $scope.findword = function(string) {
-            for (let i=0; i< $scope.words.length; i++) {
-                if (string===$scope.words[i]) {
-                    $scope.words.splice( $scope.words.indexOf(string), 1 );
-                    return true;  
-            }
+            for (let i = 0; i < $scope.words.length; i++) {
+                if (string === $scope.words[i]) {
+                    $scope.words.splice($scope.words.indexOf(string), 1);
+                    return true;
+                }
             }
 
             return false;
         }
 
-     
+
 
         // Subscribing to the ‘messages-channel’ and trigering the message callback
         Pubnub.subscribe({
@@ -73,18 +72,18 @@ angular.module('app', ["pubnub.angular.service"])
         // Listening to the callbacks THIS IS WHERE THE SYNCING HAPPENS
         $scope.$on(Pubnub.getMessageEventNameFor($scope.channel), function(ngEvent, m) {
             $scope.$apply(function() {
-                
+
                 $scope.messages.push(m); // push message m onto messages array
                 // M IS OBJECT OF SENT OBJECT {content:.., uuid:..)}
-               if ( $scope.findword(m.content)) {
-            
+                if ($scope.findword(m.content)) {
 
-            }
+
+                }
 
                 console.log(m.uuid);
-               // console.log($scope.messages);
+                // console.log($scope.messages);
             });
         });
 
-         
+
     });
