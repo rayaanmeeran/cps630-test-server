@@ -4,6 +4,7 @@
 NOTES /////////////////////////////////
 Have a channel for each lobby
 AngularJS does not allow for duplicate elements
+///////////////////////////////////
 
 Adding to channel
 - Player send messages to chanel
@@ -21,7 +22,7 @@ MESSAGES
 - Listener listens to callback and infroms user if word is correct. listener will recieve true or false values.
 - Send user points in message object. At the very end save message object onto another variable and put it in database.
 - Get uuid from message and update that persons points
--
+- 
 
 END OF GAME
 - Set time limit for game

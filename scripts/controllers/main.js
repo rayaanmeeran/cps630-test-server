@@ -1,10 +1,13 @@
+
+// VARIABLE FOR EACH PERSON
 var val1;
 var val2;
+
 
 angular.module('app', ["pubnub.angular.service"])
     .controller('ChatCtrl', function($scope, Pubnub) {
         $scope.channel = 'messages-channel';
-        $scope.value = 0;
+        $scope.numofPlayers=0;
         // Generating a random uuid between 1 and 100 using an utility function from the lodash library.         
         $scope.uuid = "1";
         $scope.points = 0;
@@ -73,7 +76,11 @@ angular.module('app', ["pubnub.angular.service"])
         // Subscribing to the ‘messages-channel’ and trigering the message callback
         Pubnub.subscribe({
             channel: $scope.channel,
-            triggerEvents: ['callback']
+            triggerEvents: ['callback'],
+            connect: function() {
+                $scope.numofPlayers++;  
+            }
+            
         });
 
 
@@ -84,7 +91,8 @@ angular.module('app', ["pubnub.angular.service"])
 
                 $scope.messages.push(m); // push message m onto messages array
                 // M IS OBJECT OF SENT OBJECT {content:.., uuid:..)}
-                if ($scope.findword(m.content)) {
+               if ( $scope.findword(m.content)) {
+              
 
 
                 }
@@ -92,6 +100,8 @@ angular.module('app', ["pubnub.angular.service"])
                 console.log("$on: m.sender_uuid = " + m.sender_uuid);
                 //console.log(m.uuid);
                 // console.log($scope.messages);
+            console.log($scope.numofPlayers);
+               // console.log($scope.messages);
             });
         });
 
