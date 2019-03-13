@@ -1,18 +1,59 @@
 <!doctype html>
 <html>
-  <head>
+
+<head>
     <title>Socket.IO chat</title>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.7/angular.min.js"></script>
     <style>
-      * { margin: 0; padding: 0; box-sizing: border-box; }
-      body { font: 13px Helvetica, Arial; }
-      form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
-      form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
-      form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
-      #messages { list-style-type: none; margin: 0; padding: 0; }
-      #messages li { padding: 5px 10px; }
-      #messages li:nth-child(odd) { background: #eee; }
-      #messages { margin-bottom: 40px }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font: 13px Helvetica, Arial;
+        }
+        
+        form {
+            background: #000;
+            padding: 3px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+        
+        form input {
+            border: 0;
+            padding: 10px;
+            width: 90%;
+            margin-right: .5%;
+        }
+        
+        form button {
+            width: 9%;
+            background: rgb(130, 224, 255);
+            border: none;
+            padding: 10px;
+        }
+        
+        #messages {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+        
+        #messages li {
+            padding: 5px 10px;
+        }
+        
+        #messages li:nth-child(odd) {
+            background: #eee;
+        }
+        
+        #messages {
+            margin-bottom: 40px
+        }
     </style>
   </head>
   <body ng-app='app'>
@@ -26,40 +67,48 @@
     <ul id="messages" >
         <li ng-repeat="z in words"> {{ z }} </li>
 
-    </ul>
-    <form action="">
-      <input id="m" autocomplete="off" /><button>Send</button>
-    </form>
+        </ul>
+        <form action="">
+            <input id="m" autocomplete="off" /><button>Send</button>
+        </form>
     </div>
     <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
     <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
-   
+
     <script>
+        var app = angular.module("app", []);
+        app.controller("cont", function($scope) {
+            $scope.words = ['hello', 'bye', 'tomorrow', 'tonight'];
 
-var app = angular.module("app", []);
-app.controller("cont",function($scope){
-      $scope.words = ['hello','bye','tomorrow','tonight'];
 
-
-      $scope.findword = function(string) {
-            for (let i = 0; i < $scope.words.length; i++) {
-                if (string === $scope.words[i]) {
-                    $scope.words.splice($scope.words.indexOf(string), 1);
-                    return true;
+            $scope.findword = function(string) {
+                for (let i = 0; i < $scope.words.length; i++) {
+                    if (string === $scope.words[i]) {
+                        $scope.words.splice($scope.words.indexOf(string), 1);
+                        return true;
+                    }
                 }
+
+                return false;
             }
 
-            return false;
-        }
+            $(function() {
+                var socket = io();
+                $('form').submit(function() {
+                    //  $scope.findword(msg);
+                    socket.emit('chat message', $('#m').val());
+                    $('#m').val('');
+                    return false;
+                });
 
-      $(function () {
-        var socket = io();
-        $('form').submit(function(){
-        //  $scope.findword(msg);
-          socket.emit('chat message', $('#m').val());
-          $('#m').val('');
-          return false;
-        });
+                socket.on('chat message', function(msg) {
+                    // $('#messages').append($('<li>').text(msg));
+                    $scope.$apply(function() { //APPLIES CHANGE TO FUNCITON
+                        $scope.findword(msg);
+                        console.log($scope.words);
+                        // window.scrollTo(0, document.body.scrollHeight);
+                    });
+                });
 
         socket.on('chat message', function(msg){
          // $('#messages').append($('<li>').text(msg));
@@ -73,9 +122,10 @@ app.controller("cont",function($scope){
     
     });
 
+            });
 
-                   });
 
-      </script>
-  </body>
+    </script>
+</body>
+
 </html>
