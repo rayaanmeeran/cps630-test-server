@@ -2,6 +2,7 @@
 <html>
   <head>
     <title>Socket.IO chat</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.7/angular.min.js"></script>
     <style>
       * { margin: 0; padding: 0; box-sizing: border-box; }
       body { font: 13px Helvetica, Arial; }
@@ -14,26 +15,61 @@
       #messages { margin-bottom: 40px }
     </style>
   </head>
-  <body>
-    <ul id="messages"></ul>
+  <body ng-app='app'>
+      <div ng-controller="cont">
+    <ul id="messages" >
+        <li ng-repeat="z in words"> {{ z }} </li>
+
+    </ul>
     <form action="">
       <input id="m" autocomplete="off" /><button>Send</button>
     </form>
+    </div>
     <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
     <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+   
     <script>
+
+var app = angular.module("app", []);
+app.controller("cont",function($scope){
+      $scope.words = ['hello','bye','tomorrow','tonight'];
+
+
+      $scope.findword = function(string) {
+            for (let i = 0; i < $scope.words.length; i++) {
+                if (string === $scope.words[i]) {
+                    $scope.words.splice($scope.words.indexOf(string), 1);
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
       $(function () {
         var socket = io();
         $('form').submit(function(){
+        //  $scope.findword(msg);
           socket.emit('chat message', $('#m').val());
           $('#m').val('');
           return false;
         });
+
         socket.on('chat message', function(msg){
-          $('#messages').append($('<li>').text(msg));
-          window.scrollTo(0, document.body.scrollHeight);
-        });
-      });
-    </script>
+         // $('#messages').append($('<li>').text(msg));
+          $scope.$apply(function ()  { //APPLIES CHANGE TO FUNCITON
+          $scope.findword(msg);
+              console.log($scope.words);
+           // window.scrollTo(0, document.body.scrollHeight);
+         });
+                  });      
+     
+    
+    });
+
+
+                   });
+
+      </script>
   </body>
 </html>

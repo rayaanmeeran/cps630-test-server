@@ -3,12 +3,15 @@
 
 <head>
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  
     <title>Page Title</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://cdn.pubnub.com/pubnub-3.16.5.js"></script>
+    <script src="https://cdn.pubnub.com/sdk/javascript/pubnub.4.22.0.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.7/angular.min.js"></script>
-    <script src="https://cdn.pubnub.com/pubnub-3.7.21.js"></script>
-    <script src="https://cdn.pubnub.com/sdk/pubnub-angular/pubnub-angular-3.2.1.js"></script>
+    <script src="https://cdn.pubnub.com/sdk/pubnub-angular/pubnub-angular-4.1.0.js"></script>
+
+ 
     
 </head>
 
@@ -25,7 +28,7 @@
             <button type="submit">Send</button>
         </form>
 
-        <h1 ng-model="numofPlayers">{{ numofPlayers }}</h1>
+        <h1>{{ numofPlayers }}</h1>
 
         <ul>
             <li ng-repeat="message in words track by $index">
