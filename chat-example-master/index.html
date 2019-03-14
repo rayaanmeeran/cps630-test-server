@@ -55,17 +55,18 @@
             margin-bottom: 40px
         }
     </style>
-  </head>
-  <body ng-app='app'>
-      <div ng-controller="cont">
+</head>
 
-          <form ng-submit="setUUID()">
-              <input type="text" ng-model="userID" placeholder="Type your User ID" />
-              <button type="submit">Set User ID</button>
-          </form>
+<body ng-app='app'>
+    <div ng-controller="cont">
 
-    <ul id="messages" >
-        <li ng-repeat="z in words"> {{ z }} </li>
+        <form ng-submit="setUUID()">
+            <input type="text" ng-model="userID" placeholder="Type your User ID" />
+            <button type="submit">Set User ID</button>
+        </form>
+
+        <ul id="messages">
+            <li ng-repeat="z in words"> {{ z }} </li>
 
         </ul>
         <form action="">
@@ -110,21 +111,19 @@
                     });
                 });
 
-        socket.on('chat message', function(msg){
-         // $('#messages').append($('<li>').text(msg));
-          $scope.$apply(function ()  { //APPLIES CHANGE TO FUNCITON
-          $scope.findword(msg);
-         
-           // window.scrollTo(0, document.body.scrollHeight);
-         });
-                  });      
-     
-    
-    });
+                socket.on('chat message', function(msg) {
+                    // $('#messages').append($('<li>').text(msg));
+                    $scope.$apply(function() { //APPLIES CHANGE TO FUNCITON
+                        $scope.findword(msg);
+
+                        // window.scrollTo(0, document.body.scrollHeight);
+                    });
+                });
+
 
             });
 
-
+        });
     </script>
 </body>
 

@@ -10,8 +10,8 @@ angular.module('app', ["pubnub.angular.service"])
         // Generating a random uuid between 1 and 100 using an utility function from the lodash library.         
         $scope.uuid = "1";
         $scope.points = 0;
-        
-      Pubnub = new  PubNub({
+
+        Pubnub = new PubNub({
             subscribeKey: 'sub-c-9282f932-4516-11e9-82b8-5ab7e7fd9be2',
             publishKey: 'pub-c-dcae03d5-0a42-429b-996d-f1d7e02b4036',
             uuid: $scope.uuid,
@@ -43,7 +43,7 @@ angular.module('app', ["pubnub.angular.service"])
                     date: new Date()
                         //points=$scope.points
                 },
-                callback: function(m) { 
+                callback: function(m) {
                     console.log(m); // callback object function fires when we finish sending a message(m) to the channel
                 }
             });
@@ -71,21 +71,21 @@ angular.module('app', ["pubnub.angular.service"])
 
 
 
-        
+
 
         // Subscribing to the ‘messages-channel’ and trigering the message callback
         Pubnub.subscribe({
             channel: $scope.channel,
             triggerEvents: ['callback'],
-            callback: function(message) {console.log(message)},
-            connect : function(message) {
+            callback: function(message) { console.log(message) },
+            connect: function(message) {
                 $scope.numofPlayers++;
                 console.log($scope.numofPlayers);
             }
         });
 
 
-   Pubnub.hereNow();
+        Pubnub.hereNow();
 
 
         // Listening to the callbacks THIS IS WHERE THE SYNCING HAPPENS
@@ -98,7 +98,7 @@ angular.module('app', ["pubnub.angular.service"])
 
                 }
 
-                 console.log("$on: m.sender_uuid = " + m.sender_uuid);
+                console.log("$on: m.sender_uuid = " + m.sender_uuid);
                 //console.log(m.uuid);
                 // console.log($scope.messages);
                 console.log($scope.numofPlayers);
