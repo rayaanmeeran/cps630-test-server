@@ -3,9 +3,9 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var port = process.env.PORT || 3000;
 
-var numofUsers=0;
-var usernames={};
-var room='';
+var numofUsers = 0;
+var usernames = {};
+var room = '';
 
 
 function updateUsers(socket) {
@@ -28,8 +28,8 @@ socket.join(room);
 }
 
 
-app.get('/', function(req, res){
-  res.sendFile(__dirname + '/index.html');
+app.get('/', function(req, res) {
+    res.sendFile(__dirname + '/index.html');
 });
 
 io.on('connection', function(socket){ // SOCKET.ID IS UNIQE TO EACH PERSON
@@ -39,21 +39,24 @@ io.on('connection', function(socket){ // SOCKET.ID IS UNIQE TO EACH PERSON
   socket.on('disconnect', function() { numofUsers--; });
 
   var currentRoom=Object.keys( io.sockets.adapter.sids[socket.id])[0];
-  var conInCurRoom = count = io.rooms[currentRoom].length;
+  var conInCurRoom =  io.sockets.adapter.rooms[currentRoom].length;
 
-if (conInCurRoom===2) {
-  socket.emit('start');
+console.log("Num of people " + numofUsers + " In room "+room+" is: "+ conInCurRoom);
+  
+if (conInCurRoom===2) { // If tehre are two people in the room start.
+  io.to(currentRoom).emit('start');
 }
 else {
-  socket.emit('not ready');
+  io.to(currentRoom).emit('not ready');
 }
 
   
   socket.on('chat message', function(msg){
     io.to(currentRoom).emit('chat message', msg); 
     usernames[socket.id]=msg;  
-    console.log("  room: "+ currentRoom + " words are " +  io.sockets.adapter.rooms[currentRoom].words);
+    //console.log("  room: "+ currentRoom + " words are " +  io.sockets.adapter.rooms[currentRoom].words);
   });
+
 
 
 socket.on('setArr', function(newWords) {
@@ -69,6 +72,6 @@ console.log("  room: "+ currentRoom + " words are " +  io.sockets.adapter.rooms[
 
 
 
-http.listen(port, function(){
-  console.log('listening on *:' + port);
+http.listen(port, function() {
+    console.log('listening on *:' + port);
 });
