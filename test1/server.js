@@ -8,7 +8,7 @@ var numofUsers = 0;
 var usernames = {};
 var room = '';
 
-user = [];
+users = [];
 connections = [];
 
 server.listen(port, function() {
@@ -19,19 +19,13 @@ app.get('/', function(req, res) {
     res.sendFile(__dirname + '/index.html');
 });
 
-io.sockets.on('connection', function(socket) { // SOCKET.ID IS UNIQUE TO EACH PERSON
+io.on('connection', function(socket) { // SOCKET.ID IS UNIQUE TO EACH PERSON
 
     connections.push(socket);
-    console.log("Connected: Number of sockets = ", connections.length)
+    console.log("Connected: Number of sockets = ", connections.length);
 
     //numofUsers++;
     //console.log( numofUsers + " people have joined"); //socket.id is uniqe id  usernames[socket.id] is set name for unique socket
-
-
-    socket.on('chat message', function(msg) {
-        io.emit('chat message', msg);
-        usernames[socket.id] = msg;
-    });
 
     //updateUsers(socket);
     //console.log(numofUsers + "  room: " + room + " val is " + io.sockets.adapter.rooms[room].var);
