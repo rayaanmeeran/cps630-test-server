@@ -76,11 +76,14 @@
     <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
 
     <script>
+
+  var socket = io();
+
         var app = angular.module("app", []);
         app.controller("cont", function($scope) {
-            $scope.words = ['hello', 'bye', 'tomorrow', 'tonight'];
-
-
+           // $scope.words=[];
+           $scope.words=['hello', 'bye', 'tomorrow', 'tonight'];
+            socket.emit('setArr',$scope.words);
             $scope.findword = function(string) {
                 for (let i = 0; i < $scope.words.length; i++) {
                     if (string === $scope.words[i]) {
@@ -92,11 +95,13 @@
                 return false;
             }
 
+
             $(function() {
-                var socket = io();
+            
                 $('form').submit(function() {
                     //  $scope.findword(msg);
                     socket.emit('chat message', $('#m').val());
+               
                     $('#m').val('');
                     return false;
                 });
@@ -105,20 +110,17 @@
                     // $('#messages').append($('<li>').text(msg));
                     $scope.$apply(function() { //APPLIES CHANGE TO FUNCITON
                         $scope.findword(msg);
+                        socket.emit('setArr',$scope.words);
                         console.log($scope.words);
                         // window.scrollTo(0, document.body.scrollHeight);
                     });
                 });
 
-        socket.on('chat message', function(msg){
-         // $('#messages').append($('<li>').text(msg));
-          $scope.$apply(function ()  { //APPLIES CHANGE TO FUNCITON
-          $scope.findword(msg);
-         
-           // window.scrollTo(0, document.body.scrollHeight);
-         });
-                  });      
+       socket.on('sentNewArray', function(msg) {$scope.words=msg;});
      
+       socket.on('start', function(msg) {$scope.words=msg;});
+
+       socket.on('not ready', function(msg) {$scope.words=msg;});
     
     });
 
