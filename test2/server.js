@@ -7,11 +7,33 @@ var numofUsers = 0;
 var usernames = {};
 var connections=[];
 var room = '';
-
+var team=0;
 
 function updateUsers(socket) {
-room = parseInt(numofUsers/3).toString();
-socket.join(room);
+room = parseInt(connections.length/3).toString();
+
+
+for (let i=0; i<=room; i++) {
+  var clientsInRoom = io.nsps['/'].adapter.rooms[i.toString()];
+  var numClients = clientsInRoom === undefined ? 0 : Object.keys(clientsInRoom.sockets).length;
+  
+  
+  if (parseInt(numClients)<2) {
+    socket.join(i.toString());
+  
+  
+    var team1 = (team%2)+1;
+    team++;
+    socket.team=team1;
+ 
+    console.log("In room " + i + " there are " + (numClients+1) + " people " +" \n Socket team is " +socket.team);
+    break;
+  }
+
+}
+
+
+//socket.join(room);
 /*
   if (numofUsers===1) {
     socket.join('1');
@@ -39,23 +61,27 @@ connections.push(socket);
 
   updateUsers(socket);
 
+//  console.log(numClients);
+
   socket.on('disconnect', function() { 
     numofUsers--; 
   connections.splice(connections.indexOf(socket),1);
-console.log("Disconnected: Num of people " + connections.length + " In room "+room+" is: "+ conInCurRoom);
+//console.log("Disconnected: Num of people " + connections.length + " In room "+room+" is: "+ conInCurRoom);
   
   });
 
   var currentRoom=Object.keys( io.sockets.adapter.sids[socket.id])[0];
   var conInCurRoom =  io.sockets.adapter.rooms[currentRoom].length;
 
-console.log("Connected: Num of people " + connections.length + " In room "+room+" is: "+ conInCurRoom);
+//console.log("Connected: Num of people " + connections.length + " In room "+room+" is: "+ conInCurRoom);
   
 if (conInCurRoom===2) { // If tehre are two people in the room start.
   io.to(currentRoom).emit('start');
+  currentRoom.start=true;
 }
 else {
   io.to(currentRoom).emit('not ready');
+  currentRoom.start=false;
 }
 
   
@@ -70,7 +96,7 @@ else {
 socket.on('setArr', function(newWords) {
 io.sockets.adapter.rooms[currentRoom].words=newWords;
 io.to(currentRoom).emit('sentNewArray',io.sockets.adapter.rooms[currentRoom].words);
-console.log("  room: "+ currentRoom + " words are " +  io.sockets.adapter.rooms[currentRoom].words);
+//console.log("  room: "+ currentRoom + " words are " +  io.sockets.adapter.rooms[currentRoom].words);
 });
 
 
