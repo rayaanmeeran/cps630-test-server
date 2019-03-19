@@ -10,7 +10,7 @@ var numOfRooms = 0;
 var team = 0;
 
 http.listen(port, function() {
-    console.log("Server started..." + "\nListening on port: " + port);
+    console.log("Server started..." + "\nListening on port: " + port + "\n");
 });
 
 app.get('/', function(req, res) {
@@ -108,8 +108,8 @@ io.on('connection', function(socket) { // SOCKET.ID IS UNIQE TO EACH PERSON
         } else if (parseInt(msg) === 2) {
             io.sockets.adapter.rooms[currentRoom].points2 += 1;
         }
-        console.log(typeof(msg));
-        console.log("Socket on team " + socket.team + " has " + socket.points + "points\n" + " Team 1: " + io.sockets.adapter.rooms[currentRoom].points1 + " Team 2: " + io.sockets.adapter.rooms[currentRoom].points2);
+        //console.log(typeof(msg));
+        console.log("Socket on team " + socket.team + " has " + socket.points + " points\n" + " Team 1: " + io.sockets.adapter.rooms[currentRoom].points1 + " Team 2: " + io.sockets.adapter.rooms[currentRoom].points2 + "\n-------------------------------------");
     });
 
     socket.on('setArr', function(newWords) {
