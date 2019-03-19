@@ -9,6 +9,14 @@ var connections = [];
 var numOfRooms = 0;
 var team = 0;
 
+http.listen(port, function() {
+    console.log("Server started..." + "\nListening on port: " + port);
+});
+
+app.get('/', function(req, res) {
+    res.sendFile(__dirname + '/index.html');
+});
+
 
 function updateUsers(socket) {
     numOfRooms = parseInt(connections.length / 3);
@@ -71,10 +79,6 @@ function wordPoint(word) {
     return word.length * 10;
 }
 
-app.get('/', function(req, res) {
-    res.sendFile(__dirname + '/index.html');
-});
-
 io.on('connection', function(socket) { // SOCKET.ID IS UNIQE TO EACH PERSON
     numofUsers++;
     connections.push(socket);
@@ -114,13 +118,4 @@ io.on('connection', function(socket) { // SOCKET.ID IS UNIQE TO EACH PERSON
         //console.log("  numOfRooms: "+ currentRoom + " words are " +  io.sockets.adapter.rooms[currentRoom].words);
     });
 
-
-
-});
-
-
-
-
-http.listen(port, function() {
-    console.log('listening on *:' + port);
 });
