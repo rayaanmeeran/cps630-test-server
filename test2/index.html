@@ -67,7 +67,7 @@
 
         <h1 id="test">TEST</h1>
         <h1 id="room">ROOM</h1>
-
+        <h1>{{ team1Points }} {{ team2Points }}</h1>
         <ul id="messages">
             <li ng-repeat="z in words"> {{ z }} </li>
 
@@ -109,6 +109,8 @@
 
             $(function() {
 
+                $scope.team1Points = 0;
+                $scope.team2Points = 0;
                 $('form').submit(function() {
                     //  $scope.findword(msg);
                     socket.emit('chat message', $('#m').val());
@@ -117,13 +119,24 @@
                     return false;
                 });
 
-                socket.on('chat message', function(msg) {
+                socket.on('updateScore', function(point1, point2) {
+
+                    $scope.$apply(function() {
+                        $scope.team1Points = point1;
+                        $scope.team2Points = point2;
+                        console.log(point1);
+                    });
+
+                });
+
+                socket.on('chat message', function(msg, team, point1, point2) {
                     // $('#messages').append($('<li>').text(msg));
 
                     $scope.$apply(function() { //APPLIES CHANGE TO FUNCITON
                         if ($scope.findword(msg))
                         //   if (counter === 0)
-                            socket.emit('correct', 1);
+                            socket.emit('correct', parseInt(team));
+
 
 
                         // counter++;R
