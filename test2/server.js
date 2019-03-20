@@ -43,12 +43,6 @@ function updateUsers(socket) {
 
     }
 
-    /*if (fullRooms===numOfRooms && fullRooms<1) {
-      newRoom=(parseInt(newRoom)+1).toString(); 
-      numOfRooms++;
-      socket.join((newRoom).toString());
-      io.to(newRoom).emit('start',newRoom);
-      }*/
     if (newRoom === undefined) {
         newRoom = (numOfRooms + 1).toString();
         numOfRooms++;
@@ -58,9 +52,7 @@ function updateUsers(socket) {
     clientsInRoom = io.nsps['/'].adapter.rooms[newRoom];
     numClients = clientsInRoom === undefined ? 0 : Object.keys(clientsInRoom.sockets).length;
 
-
-    //else {
-    if (numClients === 2) { // If tehre are two people in the numOfRooms start.
+    if (numClients === 2) { // If there are two people in the numOfRooms start.
         io.to(newRoom).emit('start', newRoom);
         io.sockets.adapter.rooms[newRoom].start = true;
         io.sockets.adapter.rooms[newRoom].points1 = 0;
@@ -70,7 +62,6 @@ function updateUsers(socket) {
         console.log(io.sockets.adapter.rooms[newRoom].start);
     } else {
         io.to(newRoom).emit('not ready');
-        // io.sockets.adapter.rooms[currentRoom].start=false;
     }
     //} // END OF BIG ELSE
 
