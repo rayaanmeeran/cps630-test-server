@@ -149,11 +149,10 @@
                             // When timer reaches 0
                             $('#timer').html("GAME STARTED");
                             clearInterval(timeInterval); // Stops setInterval from continuing
+                            var wordBank = ['hello', 'bye', 'tomorrow', 'tonight'];
+                            socket.emit('setArr', wordBank);
                         }
                     }, 1000);
-
-                    var wordBank = ['hello', 'bye', 'tomorrow', 'tonight'];
-                    socket.emit('setArr', wordBank);
                 });
 
                 socket.on('not ready', function(msg) {
