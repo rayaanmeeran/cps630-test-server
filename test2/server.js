@@ -9,6 +9,7 @@ var usernames = {};
 var connections = [];
 var numOfRooms = 0;
 var team = 0;
+const numofPlayers = 2;
 
 http.listen(port, function() {
     console.log("Server started..." + "\nListening on port: " + port + "\n");
@@ -32,7 +33,7 @@ function updateUsers(socket) {
         var isStarted = started === undefined ? false : io.sockets.adapter.rooms[i.toString()].start;
 
 
-        if (parseInt(numClients) < 2 && !isStarted) {
+        if (parseInt(numClients) < numofPlayers && !isStarted) {
             socket.join(i.toString());
             var team1 = (team % 2) + 1;
             team++;
@@ -52,7 +53,7 @@ function updateUsers(socket) {
     clientsInRoom = io.nsps['/'].adapter.rooms[newRoom];
     numClients = clientsInRoom === undefined ? 0 : Object.keys(clientsInRoom.sockets).length;
 
-    if (numClients === 2) { // If there are two people in the numOfRooms start.
+    if (numClients === numofPlayers) {
         io.to(newRoom).emit('start', newRoom);
         io.sockets.adapter.rooms[newRoom].start = true;
         io.sockets.adapter.rooms[newRoom].points1 = 0;
