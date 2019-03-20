@@ -67,6 +67,7 @@
 
         <h1 id="test">TEST</h1>
         <h1 id="room">ROOM</h1>
+        <h1 id="timer">TIMER</h1>
         <h1>{{ team1Points }} {{ team2Points }}</h1>
         <ul id="messages">
             <li ng-repeat="z in words"> {{ z }} </li>
@@ -82,13 +83,12 @@
     <script>
         var socket = io();
         var team = 0;
-
+        var timer = 10;
+        var counter = 0;
 
         var app = angular.module("app", []);
         app.controller("cont", function($scope) {
-            // $scope.words=[];
             $scope.words = [];
-
 
             $scope.findword = function(string) {
                 for (let i = 0; i < $scope.words.length; i++) {
@@ -97,7 +97,6 @@
                         return true;
                     }
                 }
-
                 return false;
             }
 
@@ -105,14 +104,11 @@
                 return word.length * 10;
             }
 
-
-
             $(function() {
 
                 $scope.team1Points = 0;
                 $scope.team2Points = 0;
                 $('form').submit(function() {
-                    //  $scope.findword(msg);
                     socket.emit('chat message', $('#m').val());
 
                     $('#m').val('');
@@ -120,43 +116,42 @@
                 });
 
                 socket.on('updateScore', function(point1, point2) {
-
                     $scope.$apply(function() {
                         $scope.team1Points = point1;
                         $scope.team2Points = point2;
                         console.log(point1);
                     });
-
                 });
 
                 socket.on('chat message', function(msg, team) {
-                    // $('#messages').append($('<li>').text(msg));
-
                     $scope.$apply(function() { //APPLIES CHANGE TO FUNCITON
                         if ($scope.findword(msg))
-                        //   if (counter === 0)
+                        //if (counter === 0)
                             socket.emit('correct', parseInt(team), msg);
-
-
-
-                        // counter++;R
                         socket.emit('setArr', $scope.words);
-
-                        // window.scrollTo(0, document.body.scrollHeight);
                     });
-
                 });
 
                 socket.on('sentNewArray', function(msg) {
                     $scope.$apply(function() {
                         $scope.words = msg;
-                        //counter = 0;
                     });
                 });
 
                 socket.on('start', function(msg) {
                     $('#test').html('PASS');
                     $('#room').html(msg);
+
+                    var timeInterval = setInterval(() => {
+                        counter++;
+                        $('#timer').html("GAME STARTING IN: " + (timer - counter));
+                        if (timer == counter) {
+                            // When timer reaches 0
+                            $('#timer').html("GAME STARTED");
+                            clearInterval(timeInterval);
+                        }
+                    }, 1000);
+
                     var wordBank = ['hello', 'bye', 'tomorrow', 'tonight'];
                     socket.emit('setArr', wordBank);
                 });
@@ -164,9 +159,7 @@
                 socket.on('not ready', function(msg) {
                     $('#test').html('FAIL');
                 });
-
             });
-
         });
     </script>
 </body>
