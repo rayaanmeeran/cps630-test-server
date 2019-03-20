@@ -1,9 +1,9 @@
-var app = require('express')();
+var express = require('express');
+var app = express();
 var http = require('http').createServer(app);
 var io = require('socket.io')(http);
 var port = process.env.PORT || 3000;
 
-var numofUsers = 0;
 var usernames = {};
 var connections = [];
 var numOfRooms = 0;
@@ -14,9 +14,10 @@ http.listen(port, function() {
 });
 
 app.get('/', function(req, res) {
-    res.sendFile(__dirname + '/index.html');
+    res.sendFile(__dirname + '/public/index.html');
 });
 
+app.use(express.static('public'));
 
 function updateUsers(socket) {
     numOfRooms = parseInt(connections.length / 3);
@@ -64,7 +65,6 @@ function updateUsers(socket) {
         io.sockets.adapter.rooms[newRoom].start = true;
         io.sockets.adapter.rooms[newRoom].points1 = 0;
         io.sockets.adapter.rooms[newRoom].points2 = 0;
-        io.sockets.adapter.rooms[newRoom].isUpdated = false;
 
         console.log(io.sockets.adapter.rooms[newRoom].start);
     } else {
@@ -80,59 +80,28 @@ function wordPoint(word) {
     return word.length * 10;
 }
 
-io.on('connection', function(socket) { // SOCKET.ID IS UNIQE TO EACH PERSON
-    numofUsers++;
-    connections.push(socket);
-    socket.points = 0;
-    updateUsers(socket);
-    var currentRoom = Object.keys(io.sockets.adapter.sids[socket.id])[0];
-    //  console.log(numClients);
+io.on('connection', function(socket) { // SOCKET.ID IS UNIQUE TO EACH PERSON
+
+    var user = new User(socket.id, 0);
+    connections.push(user);
+    updateUsers(user);
+
+    var currentRoom = Object.keys(io.sockets.adapter.sids[user.id])[0];
 
     socket.on('disconnect', function() {
         numofUsers--;
         connections.splice(connections.indexOf(socket), 1);
-        //console.log("Disconnected: Num of people " + connections.length + " In numOfRooms "+numOfRooms+" is: "+ conInCurRoom);
 
     });
 
-
-    socket.on('chat message', function(msg) {
-        io.to(currentRoom).emit('chat message', msg, socket.team);
+    socket.on('word submit', function(msg) {
+        io.to(currentRoom).emit('chat message', msg);
         usernames[socket.id] = msg;
-        io.sockets.adapter.rooms[currentRoom].isUpdated = false;
-        //console.log("  numOfRooms: "+ currentRoom + " words are " +  io.sockets.adapter.rooms[currentRoom].words);
-    });
-
-
-    function wordPoint(word) {
-        return word.length * 10;
-    }
-
-
-    socket.on('correct', function(team, word) { // DIVIDE BY NUMBER OF PEOPLE IN ROOM
-
-        if (!io.sockets.adapter.rooms[currentRoom].isUpdated)
-            if (parseInt(team) === 1) {
-                io.sockets.adapter.rooms[currentRoom].points1 += wordPoint(word);
-            } else if (parseInt(team) === 2) {
-            io.sockets.adapter.rooms[currentRoom].points2 += wordPoint(word);
-        }
-<<<<<<< HEAD
-        io.sockets.adapter.rooms[currentRoom].isUpdated = true;
-
-        socket.emit('updateScore', io.sockets.adapter.rooms[currentRoom].points1, io.sockets.adapter.rooms[currentRoom].points2);
-
-        console.log("Socket on team " + socket.team + " has " + socket.points + "points\n" + " Team 1: " + io.sockets.adapter.rooms[currentRoom].points1 + " Team 2: " + io.sockets.adapter.rooms[currentRoom].points2);
-=======
-        //console.log(typeof(msg));
-        console.log("Socket on team " + socket.team + " has " + socket.points + " points\n" + " Team 1: " + io.sockets.adapter.rooms[currentRoom].points1 + " Team 2: " + io.sockets.adapter.rooms[currentRoom].points2 + "\n-------------------------------------");
->>>>>>> fc865e4d696f0cd375ad318f9dcf2b981a82c4b2
     });
 
     socket.on('setArr', function(newWords) {
         io.sockets.adapter.rooms[currentRoom].words = newWords;
         io.to(currentRoom).emit('sentNewArray', io.sockets.adapter.rooms[currentRoom].words);
-        //console.log("  numOfRooms: "+ currentRoom + " words are " +  io.sockets.adapter.rooms[currentRoom].words);
     });
 
 });
