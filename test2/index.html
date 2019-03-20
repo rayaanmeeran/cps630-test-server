@@ -148,7 +148,7 @@
                         if (timer == counter) {
                             // When timer reaches 0
                             $('#timer').html("GAME STARTED");
-                            clearInterval(timeInterval);
+                            clearInterval(timeInterval); // Stops setInterval from continuing
                         }
                     }, 1000);
 
