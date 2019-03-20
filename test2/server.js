@@ -1,4 +1,5 @@
-var app = require('express')();
+var express = require('express');
+var app = express();
 var http = require('http').createServer(app);
 var io = require('socket.io')(http);
 var port = process.env.PORT || 3000;
@@ -17,6 +18,7 @@ app.get('/', function(req, res) {
     res.sendFile(__dirname + '/index.html');
 });
 
+app.use(express.static(__dirname + '/'));
 
 function updateUsers(socket) {
     numOfRooms = parseInt(connections.length / 3);
@@ -75,10 +77,6 @@ function updateUsers(socket) {
 } // END OF FUNC
 
 
-function wordPoint(word) {
-    return word.length * 10;
-}
-
 io.on('connection', function(socket) { // SOCKET.ID IS UNIQE TO EACH PERSON
     numofUsers++;
     connections.push(socket);
@@ -117,7 +115,7 @@ io.on('connection', function(socket) { // SOCKET.ID IS UNIQE TO EACH PERSON
 
         socket.emit('updateScore', io.sockets.adapter.rooms[currentRoom].points1, io.sockets.adapter.rooms[currentRoom].points2);
 
-        console.log("Socket on team " + socket.team + " has " + socket.points + "points\n" + " Team 1: " + io.sockets.adapter.rooms[currentRoom].points1 + " Team 2: " + io.sockets.adapter.rooms[currentRoom].points2);
+        console.log("Socket on team " + socket.team + " has " + socket.points + "points\n" + " Team 1: " + io.sockets.adapter.rooms[currentRoom].points1 + " Team 2: " + io.sockets.adapter.rooms[currentRoom].points2 + "\n-------------------------------------");
     });
 
     socket.on('setArr', function(newWords) {
