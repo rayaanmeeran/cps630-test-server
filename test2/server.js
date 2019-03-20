@@ -117,16 +117,11 @@ io.on('connection', function(socket) { // SOCKET.ID IS UNIQE TO EACH PERSON
             } else if (parseInt(team) === 2) {
             io.sockets.adapter.rooms[currentRoom].points2 += wordPoint(word);
         }
-<<<<<<< HEAD
         io.sockets.adapter.rooms[currentRoom].isUpdated = true;
 
         socket.emit('updateScore', io.sockets.adapter.rooms[currentRoom].points1, io.sockets.adapter.rooms[currentRoom].points2);
 
         console.log("Socket on team " + socket.team + " has " + socket.points + "points\n" + " Team 1: " + io.sockets.adapter.rooms[currentRoom].points1 + " Team 2: " + io.sockets.adapter.rooms[currentRoom].points2);
-=======
-        //console.log(typeof(msg));
-        console.log("Socket on team " + socket.team + " has " + socket.points + " points\n" + " Team 1: " + io.sockets.adapter.rooms[currentRoom].points1 + " Team 2: " + io.sockets.adapter.rooms[currentRoom].points2 + "\n-------------------------------------");
->>>>>>> fc865e4d696f0cd375ad318f9dcf2b981a82c4b2
     });
 
     socket.on('setArr', function(newWords) {
