@@ -83,12 +83,10 @@
         var socket = io();
         var team = 0;
 
-
         var app = angular.module("app", []);
         app.controller("cont", function($scope) {
-            // $scope.words=[];
-            $scope.words = [];
 
+            $scope.words = [];
 
             $scope.findword = function(string) {
                 for (let i = 0; i < $scope.words.length; i++) {
@@ -97,7 +95,6 @@
                         return true;
                     }
                 }
-
                 return false;
             }
 
@@ -116,37 +113,27 @@
                 });
 
                 socket.on('word submit', function(msg) {
-                    // $('#messages').append($('<li>').text(msg));
-
                     $scope.$apply(function() { //APPLIES CHANGE TO FUNCITON
                         $scope.findword(msg);
-
-
-
-                        // counter++;R
                         socket.emit('setArr', $scope.words);
-
-                        // window.scrollTo(0, document.body.scrollHeight);
                     });
-
                 });
 
-                socket.on('sentNewArray', function(msg) {
+                socket.on('sentNewArray', function(data) {
                     $scope.$apply(function() {
-                        $scope.words = msg;
-                        //counter = 0;
+                        $scope.words = data;
                     });
                 });
 
-                socket.on('start', function(msg) {
+                socket.on('start', function(data) {
                     $('#test').html('PASS');
-                    $('#room').html(msg);
+                    $('#room').html(data);
                     var wordBank = ['hello', 'bye', 'tomorrow', 'tonight'];
                     socket.emit('setArr', wordBank);
                 });
 
-                socket.on('not ready', function(msg) {
-                    $('#test').html('FAIL');
+                socket.on('not ready', function() {
+                    $('#test').html('NOT READY');
                 });
 
             });

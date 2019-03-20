@@ -4,7 +4,6 @@ var http = require('http').createServer(app);
 var io = require('socket.io')(http);
 var port = process.env.PORT || 3000;
 
-var numofUsers = 0;
 var usernames = {};
 var connections = [];
 var numOfRooms = 0;
@@ -81,43 +80,28 @@ function wordPoint(word) {
     return word.length * 10;
 }
 
-io.on('connection', function(socket) { // SOCKET.ID IS UNIQE TO EACH PERSON
-    numofUsers++;
-    connections.push(socket);
-    socket.points = 0;
-    updateUsers(socket);
-    var currentRoom = Object.keys(io.sockets.adapter.sids[socket.id])[0];
-    //  console.log(numClients);
+io.on('connection', function(socket) { // SOCKET.ID IS UNIQUE TO EACH PERSON
+
+    var user = new User(socket.id, 0);
+    connections.push(user);
+    updateUsers(user);
+
+    var currentRoom = Object.keys(io.sockets.adapter.sids[user.id])[0];
 
     socket.on('disconnect', function() {
         numofUsers--;
         connections.splice(connections.indexOf(socket), 1);
-        //console.log("Disconnected: Num of people " + connections.length + " In numOfRooms "+numOfRooms+" is: "+ conInCurRoom);
 
     });
 
-
-    socket.on('chat message', function(msg) {
+    socket.on('word submit', function(msg) {
         io.to(currentRoom).emit('chat message', msg);
         usernames[socket.id] = msg;
-        //console.log("  numOfRooms: "+ currentRoom + " words are " +  io.sockets.adapter.rooms[currentRoom].words);
-    });
-
-
-    socket.on('correct', function(msg) {
-        if (parseInt(msg) === 1) {
-            io.sockets.adapter.rooms[currentRoom].points1 += 1;
-        } else if (parseInt(msg) === 2) {
-            io.sockets.adapter.rooms[currentRoom].points2 += 1;
-        }
-        //console.log(typeof(msg));
-        console.log("Socket on team " + socket.team + " has " + socket.points + " points\n" + " Team 1: " + io.sockets.adapter.rooms[currentRoom].points1 + " Team 2: " + io.sockets.adapter.rooms[currentRoom].points2 + "\n-------------------------------------");
     });
 
     socket.on('setArr', function(newWords) {
         io.sockets.adapter.rooms[currentRoom].words = newWords;
         io.to(currentRoom).emit('sentNewArray', io.sockets.adapter.rooms[currentRoom].words);
-        //console.log("  numOfRooms: "+ currentRoom + " words are " +  io.sockets.adapter.rooms[currentRoom].words);
     });
 
 });
