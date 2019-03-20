@@ -100,13 +100,18 @@ io.on('connection', function(socket) { // SOCKET.ID IS UNIQE TO EACH PERSON
     });
 
 
-    socket.on('correct', function(msg) { // DIVIDE BY NUMBER OF PEOPLE IN ROOM
+    function wordPoint(word) {
+        return word.length * 10;
+    }
+
+
+    socket.on('correct', function(team, word) { // DIVIDE BY NUMBER OF PEOPLE IN ROOM
 
         if (!io.sockets.adapter.rooms[currentRoom].isUpdated)
-            if (parseInt(msg) === 1) {
-                io.sockets.adapter.rooms[currentRoom].points1 += 1 / 2;
-            } else if (parseInt(msg) === 2) {
-            io.sockets.adapter.rooms[currentRoom].points2 += 1 / 2;
+            if (parseInt(team) === 1) {
+                io.sockets.adapter.rooms[currentRoom].points1 += wordPoint(word);
+            } else if (parseInt(team) === 2) {
+            io.sockets.adapter.rooms[currentRoom].points2 += wordPoint(word);
         }
         io.sockets.adapter.rooms[currentRoom].isUpdated = true;
 
