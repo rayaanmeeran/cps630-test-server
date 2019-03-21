@@ -4,6 +4,24 @@ var http = require('http').createServer(app);
 var io = require('socket.io')(http);
 var port = process.env.PORT || 3000;
 
+
+var session = require("express-session")({
+    secret: "my-secret",
+    resave: true,
+    saveUninitialized: true
+});
+var sharedsession = require("express-socket.io-session");
+
+// Use express-session middleware for express
+app.use(session);
+
+// Use shared session middleware for socket.io
+// setting autoSave:true
+io.use(sharedsession(session, {
+    autoSave: true
+}));
+
+
 var numofUsers = 0;
 var usernames = {};
 var connections = [];
@@ -16,7 +34,7 @@ http.listen(port, function() {
 });
 
 app.get('/', function(req, res) {
-    res.sendFile(__dirname + '/index.html');
+    res.sendFile(__dirname + '/login.html');
 });
 
 app.use(express.static(__dirname + '/'));
@@ -87,6 +105,7 @@ io.on('connection', function(socket) { // SOCKET.ID IS UNIQE TO EACH PERSON
         io.to(currentRoom).emit('chat message', msg, socket.team);
         usernames[socket.id] = msg;
         io.sockets.adapter.rooms[currentRoom].isUpdated = false;
+        console.log(socket.handshake.session.username);
     });
 
 
@@ -107,8 +126,16 @@ io.on('connection', function(socket) { // SOCKET.ID IS UNIQE TO EACH PERSON
 
         socket.emit('updateScore', io.sockets.adapter.rooms[currentRoom].points1, io.sockets.adapter.rooms[currentRoom].points2);
 
-        console.log("Socket on team " + socket.team + " has " + socket.points + "points\n" + " Team 1: " + io.sockets.adapter.rooms[currentRoom].points1 + " Team 2: " + io.sockets.adapter.rooms[currentRoom].points2 + "\n-------------------------------------");
+        // console.log("Socket on team " + socket.team + " has " + socket.points + "points\n" + " Team 1: " + io.sockets.adapter.rooms[currentRoom].points1 + " Team 2: " + io.sockets.adapter.rooms[currentRoom].points2 + "\n-------------------------------------");
     });
+
+    socket.on('setUsername', function(name) {
+        socket.handshake.session.username = name;
+        socket.username = name;
+        socket.handshake.session.save();
+        //  console.log(socket.handshake.session.username);
+    });
+
 
     socket.on('setArr', function(newWords) {
         io.sockets.adapter.rooms[currentRoom].words = newWords;

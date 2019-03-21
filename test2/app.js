@@ -3,6 +3,13 @@ var team = 0;
 var timer = 10;
 var counter = 0;
 
+function setUsername() {
+    var name = document.getElementById("username").value;
+    socket.emit('setUsername', name);
+    window.location.href = "./index.html";
+}
+
+
 var app = angular.module("app", []);
 app.controller("cont", function($scope) {
     $scope.words = [];
